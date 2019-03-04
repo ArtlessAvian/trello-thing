@@ -1,1 +1,2 @@
-# Story Points based automation of Trello.
+# Story Points Based Automation of Trello
+Just poking around.
