@@ -1,3 +1,6 @@
+if (typeof(trelloThingLoaded) == 'undefined') {
+trelloThingLoaded = "ay lmao"
+
 var pointsRegex = RegExp("(\\d+) [pP]oints?")
 
 var getPoints = function(card) {
@@ -23,16 +26,19 @@ var getPoints = function(card) {
     return points;
 }
 
-var dateOffset = (new Date().getTimezoneOffset() + 60 * 2) * 60 * 10000 // Timezone offset + 2 Hours for 10-midnight due dates
-var dateTransform = function(milliseconds) {
-    let out = new Date(milliseconds + dateOffset);
-    out.setMilliseconds(0); out.setSeconds(0); out.setMinutes(0); out.setHours(0);
-    return out;
-}
+// var dateOffset = 0;
+// // var dateOffset = new Date().getTimezoneOffset() * 60 * 1000 // Timezone offset + 2 Hours for 10-midnight due dates
+// // dateOffset += (60 * 2) * 60 * 1000;
+// var dateTransform = function(milliseconds) {
+//     let out = new Date(milliseconds + dateOffset);
+//     // out.setMilliseconds(0); out.setSeconds(0); out.setMinutes(0); out.setHours(0);
+//     return out;
+// }
 
 var getPointsByDate = function(lists) {
-    let pointsByDate = []
-    let nowDate = dateTransform(Date.now()); // +1 hour
+    let pointsByDate = [];
+    let debugThing = [];
+    let nowDate = new Date(Date.now());
 
     for (let listIndex in lists) {
         let list = lists[listIndex];
@@ -42,15 +48,22 @@ var getPointsByDate = function(lists) {
 
             let points = getPoints(card)
             if (points != 0) {
-                let dueDate = dateTransform(Date.parse(card.due));
+                let dueDate = new Date(Date.parse(card.due));
                 let days = Math.ceil((dueDate - nowDate) / 86400000);
-                console.log(points, days, card.name);
                 while(pointsByDate.length <= days) {pointsByDate.push(0);} // Trailing 0 is intentional
+                while(debugThing.length <= days) {debugThing.push("");} // Trailing 0 is intentional
                 pointsByDate[days-1] += points;
+                debugThing[days-1] += debugThing[days-1] ? ", " : "";
+                debugThing[days-1] += card.name + " (" + points + ")";
             }
         }
     }
+    console.log(debugThing);
     return pointsByDate;
+}
+
+var isNonIncreasing = function(list) {
+    return !list.some(function(element, index) {return index != 0 && element > list[index-1]});
 }
 
 var refineVelocity = function(pointsByDate) {
@@ -69,7 +82,12 @@ var refineVelocity = function(pointsByDate) {
         sum += previous;
     }
     out.push(0); // Trailing 0 again
-    return out;
+
+    if (isNonIncreasing(pointsByDate))
+    {
+        return out;
+    }
+    return refineVelocity(out);
 }
 
 // O(n^2) for correctness. O(n) for good enough
@@ -84,17 +102,10 @@ var onRecalculateBtn = function(t) {
     })
     
     .then(function(pointsByDate) {
-        console.log(pointsByDate)
-        return refineVelocity(pointsByDate);
-    })
-    
-    .then(function(pointsByDate) {
-        console.log(pointsByDate)
-        return refineVelocity(pointsByDate);
-    })
-    
-    .then(function(pointsByDate) {
         // Probably good enough
-        console.log(pointsByDate.slice(0, 7))
+        // console.log(pointsByDate.slice(0, 7))
+        console.log(pointsByDate);
     });
+}
+
 }
