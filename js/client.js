@@ -10,4 +10,4 @@ TrelloPowerUp.initialize({
     }
 });
 
-trelloThingLoaded = true;
+trelloThingLoaded = "yo waddup";
