@@ -1,6 +1,3 @@
-if (typeof(trelloThingLoaded) == 'undefined') {
-trelloThingLoaded = "ay lmao"
-
 var pointsRegex = RegExp("(\\d+) [pP]oints?")
 
 var getPoints = function(card) {
@@ -106,6 +103,4 @@ var onRecalculateBtn = function(t) {
         // console.log(pointsByDate.slice(0, 7))
         console.log(pointsByDate);
     });
-}
-
 }
