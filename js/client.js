@@ -9,3 +9,5 @@ TrelloPowerUp.initialize({
         }];
     }
 });
+
+trelloThingLoaded = true;
