@@ -3,8 +3,8 @@
 TrelloPowerUp.initialize({
     'board-buttons': function (t, opts) {
         return [{
-            text: 'Recalculate',
-            callback: onRecalculateBtn,
+            text: 'Today\'s Velocity',
+            callback: onTodayBtn,
             condition: 'edit'
         }];
     }

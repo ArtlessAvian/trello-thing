@@ -88,13 +88,18 @@ var refineVelocity = function(pointsByDate) {
 }
 
 // O(n^2) for correctness. O(n) for good enough
-var onRecalculateBtn = function(t) {
+var onTodayBtn = function(t) {
+    let urgency; // wow what a weird statement
+    let urgency_amt;
+
     t.lists('cards')
 
     .then(getPointsByDate)
-    
+
     .then(function(pointsByDate) {
         console.log(pointsByDate)
+        urgency = pointsByDate.findIndex(a => a);
+        urgency_amt = pointsByDate.find(a => a);
         return refineVelocity(pointsByDate);
     })
     
@@ -102,5 +107,15 @@ var onRecalculateBtn = function(t) {
         // Probably good enough
         // console.log(pointsByDate.slice(0, 7))
         console.log(pointsByDate);
+        let nonurgent_points = pointsByDate.slice(0, urgency + 1).reduce((a, b) => a + b) - urgency_amt;
+        nonurgent_points = Math.min(nonurgent_points, pointsByDate[0]);
+        console.log(nonurgent_points);
+        
+        let out_string = "You should complete " + Math.round(pointsByDate[0] * 10)/10 + " points within the next 24 hours!";
+        out_string += "\n";
+        out_string += "Of those points, " + Math.round((pointsByDate[0] - nonurgent_points) * 10)/10 + " of them must be spent on the most urgent task(s).";
+        out_string += "\n";
+        out_string += "The remaining " + Math.round(nonurgent_points * 10)/10 + " points may be spent on any task.";
+        window.alert(out_string);
     });
 }
