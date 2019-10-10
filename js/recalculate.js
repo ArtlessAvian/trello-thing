@@ -23,6 +23,10 @@ var getPoints = function(card) {
     return points;
 }
 
+var filterCards = function(cards) {
+    return cards.filter(card => !card.dueComplete);
+}
+
 var getStrategy = function(cards) {
     // Start with a bad strategy.
     // Work on the most urgent card until its due.
@@ -76,7 +80,7 @@ var examineStrategy = function(strategy, hours) {
     console.log(strategy);
 
     const target_points = sumStrategy(strategy, hours);
-    console.log("In the next ", hours, " hours, you should do ", target_points, " points");
+    console.log(`In the next ${hours} hours, you should do ${Math.ceil(target_points*100)/100} points.`);
 
     let current_card = null;
     let remaining_points = target_points;
@@ -96,19 +100,20 @@ var examineStrategy = function(strategy, hours) {
             break;
         }
     }
-    if (finished_string != "") {console.log("You must finish ", finished_string);}
+    if (finished_string != "") {console.log(`You must finish: ${finished_string}`);}
     if (current_card != null) {
         const current_points = getPoints(current_card);
         const time_left = (Date.parse(current_card.due) - Date.now()) / 1000 / 60 / 60 - hours;
         const forced_points = current_points - time_left * remaining_points/remaining_hours;
         if (forced_points > 0) {
-            console.log("You must spend ", forced_points, " of those points on ", current_card.name);
+            console.log(`You must spend ${forced_points} of those points on ${current_card.name}`);
         }
     }
 }
 
 var onTodayBtn = function(t) {
     t.cards('all')
+        .then(filterCards)
         .then(getStrategy)
         .then(function(strategy) {
             const hours = 24;
