@@ -20,6 +20,7 @@ var getPoints = function(card) {
         points -= Number.parseInt(cardMatches[1]);
     }
 
+    console.assert(points >= 0, `${card.name} has negative points. >:(`);
     return points;
 }
 
@@ -77,7 +78,8 @@ var sumStrategy = function(strategy, hours) {
 }
 
 var examineStrategy = function(strategy, hours) {
-    console.log(strategy);
+    // console.log(strategy);
+    printPriorities(strategy);
 
     const target_points = sumStrategy(strategy, hours);
     console.log(`In the next ${hours} hours, you should do ${Math.ceil(target_points*100)/100} points.`);
@@ -106,9 +108,13 @@ var examineStrategy = function(strategy, hours) {
         const time_left = (Date.parse(current_card.due) - Date.now()) / 1000 / 60 / 60 - hours;
         const forced_points = current_points - time_left * remaining_points/remaining_hours;
         if (forced_points > 0) {
-            console.log(`You must spend ${forced_points} of those points on ${current_card.name}`);
+            console.log(`You must spend ${Math.ceil(forced_points*100)/100} of those points on ${current_card.name}`);
         }
     }
+}
+
+var printPriorities = function(strategy) {
+    console.log(strategy.map(grouping => grouping[2].map(card => card.name)));
 }
 
 var onTodayBtn = function(t) {
