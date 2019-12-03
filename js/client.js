@@ -5,7 +5,7 @@ TrelloPowerUp.initialize({
         return [
             {
                 text: 'Today\'s Velocity',
-                callback: onTodayBtn,
+                callback: onTodayButton,
                 condition: 'edit'
             },
             {
