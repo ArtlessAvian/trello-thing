@@ -4,9 +4,7 @@ var getPoints = function(card) {
     let points = 0;
 
     // Get points from label
-    for (let labelIndex in card.labels) {
-        let label = card.labels[labelIndex];
-
+    for (let label of card.labels) {
         let labelMatches = pointsRegex.exec(label.name);
         if (labelMatches != null && labelMatches.length == 2) {
             points += Number.parseInt(labelMatches[1]);
@@ -117,7 +115,7 @@ var printPriorities = function(strategy) {
     console.log(strategy.map(grouping => grouping[2].map(card => card.name)));
 }
 
-var onTodayBtn = function(t) {
+var onTodayButton = function(t) {
     t.cards('all')
         .then(filterCards)
         .then(getStrategy)
