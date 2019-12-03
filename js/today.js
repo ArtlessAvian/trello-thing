@@ -1,16 +1,53 @@
+var today = {}
 
-var filterCompleted = function(cards) {
+today.filterCards = function(cards) {
     return cards.filter(card => !card.dueComplete);
+}
+
+today.sumHours = function(strategy, index = 0, hours = 24) {
+    if (hours <= strategy[index][1])
+    {
+        return strategy[index][0] * hours / strategy[index][1];
+    }
+    return strategy[index][0] + today.sumHours(strategy, index+1, hours - strategy[index][1]);
+}
+
+today.getCardsToFinish = function(strategy, hours = 24) {
+    let outstring = "";
+
+    for (let batch of strategy)
+    {
+        for (let card of batch[2])
+        {
+            if (Date.parse(card.due) < Date.now() + hours * 60 * 60 * 1000)
+            {
+                if (outstring != "") {outstring += " ";}
+                outstring += card.name;
+            }
+        }
+     
+        hours -= batch[0];
+        if (hours <= 0) {break;}
+    }
+
+    return outstring;
 }
 
 var onTodayButton = function(t) {
     t.cards('all')
-        .then(filterCompleted)
+        .then(today.filterCards)
         .then(getStrategy)
-        // .then(function(strategy) {
-        //     const hours = 24;
-        //     examineStrategy(strategy, hours);
-        // });
+        .then(subCompleted)
+        .then(refineStrategy)
+        .then(printStrategy)
+        .then(function(strategy) {
+
+            console.log(strategy);
+            console.log(`In the next 24 hours, you should do ${Math.ceil(today.sumHours(strategy)*100)/100} points.`);
+
+            console.log(`You must finish: ${today.getCardsToFinish(strategy)}`);
+
+        });
 }
 
 // var sumStrategy = function(strategy, hours) {

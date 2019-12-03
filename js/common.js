@@ -26,10 +26,14 @@ var getCompleted = function(card) {
     return points;
 }
 
+var getPastDue = card => Date.now() < Date.parse(card.due);
+
+var filterPastDue = cards => cards.filter(getPastDue);
+
 var getStrategy = function(cards) {
     // Start with a bad strategy.
     // Work on the most urgent card until its due.
-    cards.sort(function(a, b) {return Date.parse(a.due) - Date.parse(b.due);});
+    cards.sort((a, b) => Date.parse(a.due) - Date.parse(b.due));
 
     let strategy = [];
     // array of "tuples" storing
@@ -45,6 +49,23 @@ var getStrategy = function(cards) {
         start = end;
     }
 
+    return strategy;
+}
+
+var subCompleted = function(strategy) {
+    for (let batch of strategy)
+    {
+        for (let card of batch[2])
+        {
+            batch[0] -= getCompleted(card);
+        }
+    }
+
+    return strategy;
+}
+
+var refineStrategy = function(strategy)
+{
     // Refine in O(n) time.
     let refined = [];
     let batching = [0, 0, []];
@@ -61,4 +82,9 @@ var getStrategy = function(cards) {
     }
     refined.push(batching);
     return refined;
+}
+
+var printStrategy = function(strategy) {
+    console.log(strategy.map(grouping => grouping[2].map(card => card.name)));
+    return strategy;
 }

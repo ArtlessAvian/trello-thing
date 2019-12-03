@@ -1,19 +1,39 @@
+var instant = {};
 
-var onInstantButton = function(t) {
-    t.cards('all')
-        .then(function(cards) {
-            // process raw stuff
-            let filtered = cards; // 
-            let strategy = getStrategy(filtered);
-            // process stuff
-            // examineStrategy(strategy, recent, 24);
-            // process refined stuff
-        });
+instant.getMostRecent = function(cards)
+{
+    let mostRecentDate = 0;
+    let mostRecentCard = null;
+    for (let card of cards)
+    {
+        if (Date.parse(card.due) > mostRecentDate && Date.parse(card.due) < Date.now())
+        {
+            mostRecentCard = card;
+            mostRecentDate = Date.parse(card.due);
+        }
+    }
+    return mostRecentCard;
 }
 
-// var filterPast = function(cards) {
-//     return cards.filter(card => Date.now() < Date.parse(card.due));
+// instant.getPointsDone = function(velocity, recent)
+// {
+//     return velocity * (Date.now()-recent) / 1000 / 60 / 60;
 // }
+
+var onInstantButton = function(t) {
+    let recent = 0;
+
+    t.cards('all')
+        .then(getStrategy)
+        .then(refineStrategy)
+        .then(printStrategy)
+        .then(function(strategy) {
+
+            console.log(strategy);
+            // console.log(`You should currently have ${Math.ceil(instant.getInstantVelocity(strategy, recent)*100)/100} points among pending tasks.`);
+
+        });
+}
 
 // var getRecent = function(cards) {
 //     let mostRecent = 0;
