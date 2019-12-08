@@ -20,7 +20,7 @@ var getCompleted = function(card) {
 
     let cardMatches = pointsRegex.exec(card.desc);
     if (cardMatches != null && cardMatches.length == 2) {
-        points -= Number.parseInt(cardMatches[1]);
+        points += Number.parseInt(cardMatches[1]);
     }
 
     return points;
