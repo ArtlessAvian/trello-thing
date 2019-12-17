@@ -1,4 +1,6 @@
-var pointsRegex = RegExp("(\\d+) [pP]oints?")
+var filterValidCards = cards => cards.filter(card => card.due != null);
+
+var pointsRegex = RegExp("(\\d+) [pP]oints?");
 
 var getPoints = function(card) {
     let points = 0;

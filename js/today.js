@@ -35,6 +35,7 @@ today.getCardsToFinish = function(strategy, hours = 24) {
 
 var onTodayButton = function(t) {
     t.cards('all')
+        .then(filterValidCards)
         .then(today.filterCards)
         .then(getStrategy)
         .then(subCompleted)

@@ -24,6 +24,7 @@ var onInstantButton = function(t) {
     let recent = 0;
 
     t.cards('all')
+        .then(filterValidCards)
         .then(getStrategy)
         .then(refineStrategy)
         .then(printStrategy)
