@@ -15,9 +15,9 @@ today.sumHours = function(strategy, index = 0, hours = 24) {
 today.getCardsToFinish = function(strategy, hours = 24) {
     let outstring = "";
 
-    for (let batch of strategy)
+    for (const batch of strategy)
     {
-        for (let card of batch[2])
+        for (const card of batch[2])
         {
             if (Date.parse(card.due) < Date.now() + hours * 60 * 60 * 1000)
             {
@@ -43,13 +43,14 @@ var onTodayButton = function(t) {
         // .then(printStrategy2D)
         .then(refineStrategy)
         .then(printStrategyNames)
-        .then(printStrategy2D)
+        // .then(printStrategy2D)
         .then(function(strategy) {
 
             console.log(strategy);
             console.log(`In the next 24 hours, you should do ${Math.ceil(today.sumHours(strategy)*100)/100} points.`);
 
             console.log(`You must finish: ${today.getCardsToFinish(strategy)}`);
+            console.log(`You can work on: ${strategy[0][2].map(card => card.name).join()}`);
 
         });
 }
