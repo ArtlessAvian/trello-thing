@@ -27,7 +27,8 @@ var onInstantButton = function(t) {
         .then(filterValidCards)
         .then(getStrategy)
         .then(refineStrategy)
-        .then(printStrategy)
+        .then(printStrategyNames)
+        .then(printStrategy2D)
         .then(function(strategy) {
 
             console.log(strategy);

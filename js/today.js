@@ -39,8 +39,11 @@ var onTodayButton = function(t) {
         .then(today.filterCards)
         .then(getStrategy)
         .then(subCompleted)
+        // .then(function(strategy) {console.log(strategy); return strategy;})
+        // .then(printStrategy2D)
         .then(refineStrategy)
-        .then(printStrategy)
+        .then(printStrategyNames)
+        .then(printStrategy2D)
         .then(function(strategy) {
 
             console.log(strategy);

@@ -6,7 +6,7 @@ var getPoints = function(card) {
     let points = 0;
 
     // Get points from label
-    for (let label of card.labels) {
+    for (const label of card.labels) {
         let labelMatches = pointsRegex.exec(label.name);
         if (labelMatches != null && labelMatches.length == 2) {
             points += Number.parseInt(labelMatches[1]);
@@ -68,25 +68,44 @@ var subCompleted = function(strategy) {
 
 var refineStrategy = function(strategy)
 {
-    // Refine in O(n) time.
     let refined = [];
-    let batching = [0, 0, []];
-    for (const item of strategy) {
-        if (item[0]/item[1] < batching[0]/batching[1]) {
-            refined.push(batching);
-            // please tell me there's a deepcopy function i don't know about.
-            batching = item;
-        } else {
-            batching[0] += item[0];
-            batching[1] += item[1];
-            batching[2] = batching[2].concat(item[2]);
+    // let batching = [0, 0, []];
+    for (let item of strategy)
+    {
+        while (true)
+        {
+            let lastBatch = refined[refined.length-1];
+            if (refined.length == 0 || (item[0]/item[1] < lastBatch[0]/lastBatch[1]))
+            {
+                refined.push(item);
+                break;
+            }
+            else
+            {
+                lastBatch[0] += item[0];
+                lastBatch[1] += item[1];
+                lastBatch[2] = lastBatch[2].concat(item[2]);
+                item = refined.pop();
+            }
         }
     }
-    refined.push(batching);
     return refined;
 }
 
-var printStrategy = function(strategy) {
+var printStrategyNames = function(strategy) {
     console.log(strategy.map(grouping => grouping[2].map(card => card.name)));
+    return strategy;
+}
+
+var printStrategy2D = function(strategy) {
+    let sumTime = 0;
+    let sumPoints = 0;
+    let out = "";
+    for (const step of strategy) {
+        sumTime += step[1];
+        sumPoints += step[0];
+        out += `(${sumTime}, ${sumPoints})\n`;
+    }
+    console.log(out);
     return strategy;
 }
